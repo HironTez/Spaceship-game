@@ -93,4 +93,9 @@ header>#author {
     height: 100%;
     position: absolute;
     z-index: -1;
+    background-size: auto 100vh;
+}
+
+#game>#fps-counter {
+    user-select: none
 }
