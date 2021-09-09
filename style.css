@@ -62,30 +62,17 @@ header>#author {
 }
 
 #game>#player {
-    background: red;
+    /* background: red; */
     display: inline-block;
     width: 50px;
-    height: 45px;
     position: absolute;
     top: 50%;
     left: 15%;
-    transform: translateY(-50%);
-    -webkit-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-}
-
-#game>#player:before {
-    border-left: 25px solid red;
-    border-top: 25px solid transparent;
-    border-bottom: 20px solid transparent;
-    content: "";
-    height: 0;
-    left: 50px;
-    position: absolute;
-    top: 0;
-    width: 0;
+    transform: translateY(-50%) rotate(90deg);
+    -webkit-transform: translateY(-50%) rotate(90deg);
+    -moz-transform: translateY(-50%) rotate(90deg);
+    -ms-transform: translateY(-50%) rotate(90deg);
+    -o-transform: translateY(-50%) rotate(90deg);
 }
 
 #game>#game-background {
@@ -96,6 +83,25 @@ header>#author {
     background-size: auto 100vh;
 }
 
-#game>#fps-counter {
+#game * {
     user-select: none
+}
+
+#game>#obstacles>.obstacle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    /* background-color: rgb(6, 226, 255); */
+    border-radius: 10000px;
+    -webkit-border-radius: 10000px;
+    -moz-border-radius: 10000px;
+    -ms-border-radius: 10000px;
+    -o-border-radius: 10000px;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
 }
