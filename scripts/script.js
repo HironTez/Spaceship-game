@@ -255,7 +255,7 @@ const stopGame = () => {
     if (game.score > maxScore) {
         maxScore = game.score
         localStorage.setItem('maxScore', game.score)
-        showPopup('New record')
+        showPopup('New record!')
     }
 }
 
