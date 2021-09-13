@@ -100,7 +100,7 @@ class Game {
         this.startTime = Date.now()
         this.background = $('#game-background')
 
-        this.background.css('background-image', `url(${backgroundImageSrc || "../images/textures/background/space.png"})`)
+        this.background.css('background-image', `url(${backgroundImageSrc || "./images/textures/background/space.png"})`)
         const backgroundImageSize = getBackgroundImageSize(this.background)
         this.backgroundWidth = (backgroundImageSize[0] / 100 * ($(document).height() / backgroundImageSize[1] * 100))
     }
