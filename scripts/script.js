@@ -2,12 +2,17 @@ let fps
 
 const header = $('header')
 const startMenu = $('#start-menu')
+const restartMenu = $('#restart-menu')
 const playBtn = $('#start-menu > #start')
+const restartBtn = $('#restart-menu > #restart')
 const fpsCounterElem = $('#fps-counter')[0]
+const scoreCounterElem = $('#score-counter')[0]
+let maxScore = localStorage['maxScore'] ? String(localStorage['maxScore']) : 0
+const pointsTotal = $('#score-total')[0]
 
 
 class Player {
-    constructor(maxVerticalSpeed = 20, acceleration = 0.5) {
+    constructor(maxVerticalSpeed = 20, acceleration = 0.2) {
         this.verticalSpeed = 0
         this.acceleration = acceleration
         this.maxVerticalSpeed = maxVerticalSpeed
@@ -40,12 +45,12 @@ class Player {
         const oldPosition = Number(this.playerElem.css('top').match(/-?[0-9]+/)[0])
         let newPosition = oldPosition - this.verticalSpeed
 
-        if (newPosition >= screenHeight) {
-            newPosition = screenHeight
+        if (newPosition >= screenHeight - 25) {
+            newPosition = screenHeight - 25
             this.touchesTheBottomEdge = true
             this.verticalSpeed = 0
-        } else if (newPosition <= 0) {
-            newPosition = 0
+        } else if (newPosition <= 25) {
+            newPosition = 25
             this.touchesTheTopEdge = true
             this.verticalSpeed = 0
         } else {
@@ -60,6 +65,12 @@ class Player {
 
         // Fly
         if (this.fly && (this.verticalSpeed < this.maxVerticalSpeed) && !this.touchesTheTopEdge) this.verticalSpeed += accelerationNow
+    }
+
+    reset() {
+        this.verticalSpeed = 0
+        this.playerElem.css('top', `50%`)
+        this.playerElem.css('transform', `translateY(-50%) rotate(90deg)`)
     }
 }
 
@@ -84,11 +95,12 @@ class Game {
         this.gravity = gravity
         this.horizontalSpeed = horizontalSpeed
         this.HeightImitationSpeed = HeightImitationSpeed
-        this.fps = 0
         this.obstacles = []
+        this.score = 0
+        this.startTime = Date.now()
         this.background = $('#game-background')
 
-        this.background.css('background-image', `url(${backgroundImageSrc || "../images/textures/background/background.jpg"})`)
+        this.background.css('background-image', `url(${backgroundImageSrc || "../images/textures/background/space.png"})`)
         const backgroundImageSize = getBackgroundImageSize(this.background)
         this.backgroundWidth = (backgroundImageSize[0] / 100 * ($(document).height() / backgroundImageSize[1] * 100))
     }
@@ -102,10 +114,24 @@ class Game {
     }
 
     generateObstacles() {
+        // If it's time to spawn
         if (this.nextGenerateObstacleTime < Date.now() || !this.nextGenerateObstacleTime) {
-            const radius = random(40, 200)
+            // Generate new params
+            const radius = random(40, Math.min(200, Math.min($(document).height(), $(document).width()) - 60))
             const posY = random(0, 100)
-            this.obstacles.push(new Obstacle(radius, posY))
+
+            // Calculate distance between new and last obstacles
+            const lastObstacle = this.obstacles[this.obstacles.length - 1]?.obstacleElem
+            const lastObstaclePos = [Number(lastObstacle?.css('left')?.match(/-?[0-9\.]+/)[0]), Number(lastObstacle?.css('top')?.match(/-?[0-9\.]+/)[0]) / $(document).height() * 100]
+            const distanceBetweenNewAndLastObstacles = findDistance($(document).width() + radius, posY, lastObstaclePos[0], lastObstaclePos[1]) - radius - (Number(lastObstacle?.css('width')?.match(/[0-9]+/)) / 2)
+            // Create new obstacle if distance more then 60 or no more obstacles
+            if (distanceBetweenNewAndLastObstacles >= 60 || !distanceBetweenNewAndLastObstacles) this.obstacles.push(new Obstacle(radius, posY))
+            else { // Try to achieve the desired distance by reducing the radius
+                const newRadius = radius - (60 - distanceBetweenNewAndLastObstacles)
+                if (newRadius >= 40) this.obstacles.push(new Obstacle(newRadius, posY))
+            }
+
+            // Generate time to spawn next obstacle
             this.nextGenerateObstacleTime = Date.now() + random(500, 2000)
         }
     }
@@ -163,6 +189,24 @@ class Game {
             }
         }
     }
+
+    changeScore() {
+        // Once a second
+        if (Number(String(Date.now()).slice(-4, -3)) > Number(String(lastFrameTime).slice(-4, -3))) {
+            this.score = Date.now() - this.startTime // Change score
+            scoreCounterElem.innerText = 'Score: ' + (String(this.score).slice(0, -3) || '0') // Change value on the HTML element
+        }
+    }
+
+    restart() {
+        // Remove obstacles
+        this.obstacles.length = 0
+        // Remove obstacles dom elements
+        $('#game>#obstacles').empty()
+        // Reset score
+        this.score = 0
+        this.startTime = Date.now()
+    }
 }
 
 
@@ -175,6 +219,7 @@ const animationFrame = () => {
     game.generateObstacles()
     game.moveObstacles()
     game.checkCollision()
+    game.changeScore()
 
     requestAnimationFrame(animationFrame)
     fpsCounter()
@@ -182,7 +227,7 @@ const animationFrame = () => {
 
 
 const game = new Game()
-const player = new Player(20, 0.2)
+const player = new Player()
 
 const startGame = () => {
     game.run = true
@@ -190,7 +235,37 @@ const startGame = () => {
 }
 
 const stopGame = () => {
-    game.run = false
+    game.run = false // Stop game
+
+    // Show restart menu
+    restartMenu.css('display', 'block')
+    restartMenu.animate({ opacity: 1 }, 300)
+    // Enable restart button
+    restartBtn.attr('disabled', false)
+
+    // Show header
+    header.css('display', 'block')
+    header.animate({
+        opacity: 1,
+        top: '0'
+    }, 300)
+
+    // Show score
+    pointsTotal.innerText = 'Your score: ' + String(game.score).slice(0, -3)
+    if (game.score > maxScore) {
+        maxScore = game.score
+        localStorage.setItem('maxScore', game.score)
+        showPopup('New record')
+    }
+}
+
+const restartGame = () => {
+    fps = 0 // Reset fps
+    lastFrameTime = 0 // Reset last frame time
+    player.reset() // Reset player data
+    game.restart() // Reset game data
+    game.run = true // Run game
+    requestAnimationFrame(animationFrame) // Start animation frames
 }
 
 
@@ -199,7 +274,7 @@ playBtn.on('click', () => {
     // Disable button
     playBtn.attr("disabled", true)
 
-    // Hide menu animation
+    // Hide start menu
     startMenu.animate({
         opacity: 0
     }, {
@@ -209,7 +284,7 @@ playBtn.on('click', () => {
         }
     })
 
-    // Hide header animation
+    // Hide header
     header.animate({
         opacity: 0,
         top: '-10%'
@@ -222,4 +297,93 @@ playBtn.on('click', () => {
 
     // Start game after 300 ms
     setTimeout(startGame, 300)
+})
+
+
+// On press restart button
+restartBtn.on('click', () => {
+    // Disable button
+    restartBtn.attr('disabled', true)
+
+    // Hide restart menu
+    restartMenu.animate({
+        opacity: 0
+    }, {
+        duration: 300,
+        complete: () => {
+            startMenu.css('display', 'none')
+        }
+    })
+
+    // Hide header
+    header.animate({
+        opacity: 0,
+        top: '-10%'
+    }, {
+        duration: 300,
+        complete: () => {
+            header.css('display', 'none')
+        }
+    })
+
+    // Restart game after 300 ms
+    setTimeout(restartGame, 300)
+})
+
+
+// Open select textures menu
+$('.select-textures').on('click', (e) => {
+    const targetIsWhatWeNeed = ($(e.target).hasClass('select-textures')) || ($(e.target).hasClass('texture-preview'))
+    if (!targetIsWhatWeNeed) return
+    target = $(e.target).hasClass('select-textures') ? $(e.target) : $(e.target).parent()
+    
+    target.children('.textures-list').css('display', 'flex')
+    target.children('.textures-list').animate({opacity: 1}, {
+        duration: 300,
+        complete: () => {
+            target.children('.textures-list').addClass('active')
+        }
+    })
+})
+
+
+// Close all active tabs
+$(document).on('click', (e) => {
+    if (game.run) return // Exit if game run
+
+    const target = $(e.target)
+    activeTargetsParent = target.parents('.active')[0]
+    // Close all active tabs which is not parents for target element
+    const activeTabs = $('.active')
+    // Filter active tabs
+    const activeTabsNotParents = activeTabs.filter((i) => {
+        const elem = activeTabs[i]
+        return elem != activeTargetsParent
+    })
+    // If there is active tabs which is not parents for target element
+    if (activeTabsNotParents.length > 0) {
+        // Close them
+        activeTabsNotParents.removeClass('active')
+        activeTabsNotParents.animate({opacity: 0}, {
+            duration: 300,
+            complete: () => {
+                activeTabsNotParents.css('display', 'none')
+            }
+        })
+    }
+})
+
+
+// Change texture to selected
+$('.texture-icon').on('click', (e) => {
+    const target = $(e.target)
+    const newSrc = target.attr('src')
+    target.parents('.select-textures').children('.texture-preview').attr('src', newSrc)
+    if (target.hasClass('skin')) {
+        if (newSrc == player.playerElem.attr('src')) return
+        player.playerElem.attr('src', newSrc)
+    } else if (target.hasClass('background')) {
+        if (newSrc == game.background.attr('src')) return
+        game = new Game(10, 3, 5, newSrc)
+    }
 })

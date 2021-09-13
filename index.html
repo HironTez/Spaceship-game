@@ -13,14 +13,42 @@
     <header>
         <div id="title">Spaceship</div>
         <div id="author">By Hiron Tez</div>
+
+        <div id="textures">
+            <div class="select-textures">
+                <img class="texture-preview" id="skin" src="./images/textures/skins/spaceship_3.gif"></img>
+                <div class="texture-type-title">Skin</div>
+                <div class="textures-list">
+                    <img class="texture-icon skin" src="./images/textures/skins/spaceship_1.gif" alt="spaceship pixel art gif animation">
+                    <img class="texture-icon skin" src="./images/textures/skins/spaceship_2.gif" alt="spaceship pixel art gif animation">
+                    <img class="texture-icon skin" src="./images/textures/skins/spaceship_3.gif" alt="spaceship pixel art gif animation">
+                </div>
+            </div>
+            <div class="select-textures">
+                <img class="texture-preview" id="background" src="./images/textures/background/space.png"></img>
+                <div class="texture-type-title">Background</div>
+                <div class="textures-list">
+                    <img class="texture-icon background" src="./images/textures/background/space.png" alt="space pixel art">
+                    <img class="texture-icon background" src="./images/textures/background/space_2.png" alt="space pixel art">
+                </div>
+            </div>
+        </div>
     </header>
     <div id="start-menu">
+        <h3>Dodge Asteroids</h3>
         <button id="start">Play</button>
     </div>
+    <div id="restart-menu">
+        <h1>You lose</h1>
+        <h4>Try again</h4>
+        <h3 id="score-total">Your score: 10000</h3>
+        <button id="restart">Restart</button>
+    </div>
     <div id="game">
-        <img id="player" src="./images/textures/skins/skin2.png"></img>
+        <img id="player" src="./images/textures/skins/spaceship_3.gif"></img>
         <div id="game-background"></div>
         <div id="fps-counter">FPS: 0</div>
+        <div id="score-counter">Score: 0</div>
         <div id="obstacles"></div>
     </div>
 

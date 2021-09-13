@@ -78,3 +78,29 @@ const getCurrentRotationInDeg = (el) => {
 const random = (min = 0, max = 100) => {
     return Math.floor(Math.random() * ((max + 1) - min) ) + min
 }
+
+
+const findDistance = (x1, y1, x2, y2) => {
+    const A = [x1, y1]
+    const B = [x2, y2]
+    const C = [x1, y2]
+    const AC = A[1] - C[1]
+    const BC = B[0] - C[0]
+    const AB = Math.sqrt((AC ** 2) + (BC ** 2))
+    return AB
+}
+
+
+const showPopup = (text) => {
+    const popup = $(`<div class="popup">${text}</div>`) // Create a new element
+    $(document.body).append(popup) // Add it to the HTML
+    popup.animate({opacity: 1}, 1000) // Show animation
+    setTimeout(() => { // After 2 sec
+        popup.animate({opacity: 0}, { // Hide animation
+            duration: 1000,
+            complete: () => { // On animation complete
+                popup.remove() // Remove the element from HTML
+            }
+        })
+    }, 3000);
+}

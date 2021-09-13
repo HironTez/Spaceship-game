@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
 html, body {
     padding: 0;
     margin: 0;
     color: #e8e6e3;
     overflow: hidden;
+    font-family: 'Righteous', cursive;
 }
 
 button {
@@ -34,25 +37,91 @@ header>#author {
     left: 7%;
 }
 
-#start-menu {
+#start-menu, #restart-menu {
     width: calc(100vw - min(40vw, 40vh) * 2);
     height: calc(100vh - min(40vw, 40vh) * 2);
     padding: min(40vw, 40vh);
     position: absolute;
     left: 0;
     top: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     text-align: center;
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 2;
 }
 
-#start-menu>button {
+#restart-menu {
+    opacity: 0;
+    display: none;
+}
+
+#start-menu>h1, #restart-menu>h1 {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+
+#start-menu>h3, #restart-menu>h3 {
+    position: absolute;
+    top: calc(45% - 40px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+
+#restart-menu>h3 {
+    top: 55%;
+}
+
+#start-menu>h4, #restart-menu>h4 {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+}
+
+#start-menu>button, #restart-menu>button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 100px;
     height: 30px;
+    color: rgb(0, 150, 199);
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgb(0, 150, 199);
+    transition: 0.4s;
+    -webkit-transition: 0.4s;
+    -moz-transition: 0.4s;
+    -ms-transition: 0.4s;
+    -o-transition: 0.4s;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
     z-index: 1;
+}
+
+#start-menu>button:hover, #restart-menu>button:hover {
+    background-color: rgb(0, 150, 199);
+    color: rgb(232, 230, 227);
+    cursor: pointer;
 }
 
 #game {
@@ -62,7 +131,6 @@ header>#author {
 }
 
 #game>#player {
-    /* background: red; */
     display: inline-block;
     width: 50px;
     position: absolute;
@@ -93,7 +161,6 @@ header>#author {
     left: 50%;
     width: 100px;
     height: 100px;
-    /* background-color: rgb(6, 226, 255); */
     border-radius: 10000px;
     -webkit-border-radius: 10000px;
     -moz-border-radius: 10000px;
@@ -104,4 +171,151 @@ header>#author {
     -moz-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     -o-transform: translate(-50%, -50%);
+}
+
+#game>#fps-counter, #game>#score-counter {
+    position: relative;
+    z-index: 1;
+}
+
+.popup {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    width: min(30vW, 30vh);
+    height: min(10vW, 10vh);
+    background-color: rgba(0, 174, 255, 0.747);
+    border-radius: 2vw;
+    -webkit-border-radius: 2vw;
+    -moz-border-radius: 2vw;
+    -ms-border-radius: 2vw;
+    -o-border-radius: 2vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.51);
+    font-size: calc(15px + (40 - 15) * ((min(100vw, 100vh) - 320px) / (1440 - 320)));
+    z-index: 10;
+    opacity: 0;
+}
+
+#textures {
+    position: absolute;
+    top: 10px;
+    left: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.select-textures {
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    border: 2px solid rgba(0, 149, 199, 0.623);
+    border-radius: 4px;
+    padding: 2px;
+    margin: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    -o-transition: .3s;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+
+.select-textures:hover {
+    background-color: rgba(0, 149, 199, 0.212);
+    cursor: pointer;
+}
+
+.select-textures>* {
+    position: absolute;
+}
+
+.texture-preview {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.select-textures>.texture-type-title {
+    top: 100%;
+}
+
+.select-textures>.textures-list {
+    border: 2px solid rgb(0, 149, 199);
+    border-radius: 4px;
+    background-color: rgba(0, 149, 199, 0.212);
+    width: min-content;
+    height: min-content;
+    display: flex;
+    top: 150%;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+    opacity: 0;
+    display: none;
+}
+
+.select-textures>.textures-list::before {
+    border: solid 10px transparent;
+    border-bottom-color: inherit;
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, calc(-100% - 2px));
+    -webkit-transform: translate(-50%, calc(-100% - 2px));
+    -moz-transform: translate(-50%, calc(-100% - 2px));
+    -ms-transform: translate(-50%, calc(-100% - 2px));
+    -o-transform: translate(-50%, calc(-100% - 2px));
+}
+
+.select-textures>.textures-list>* {
+    position: relative;
+    max-height: 70px;
+    padding: 4px;
+    transition: .3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -ms-transition: .3s;
+    -o-transition: .3s;
+}
+
+.select-textures>.textures-list>*:hover {
+    background-color: rgba(0, 149, 199, 0.212);
+}
+
+@media (max-width: 560px) {
+    #textures {
+        left: 30px;
+    }
+
+    .select-textures {
+        width: 40px;
+        height: 40px;
+        font-size: 10px;
+    }
+
+    .select-textures>.textures-list>* {
+        max-height: 40px;
+    }
+}
+
+@media (max-width: 350px) {
+    #textures {
+        top: calc(100vh - 140px);
+    }
 }
