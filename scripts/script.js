@@ -82,7 +82,7 @@ class Obstacle {
         this.radius = radius > 200 ? 200 : (radius > 40 ? radius : 40)
         this.posY = posY > 100 ? 100 : (posY > 0 ? posY : 0)
         // Create new obstacle
-        this.obstacleElem = $('<img class="obstacle" src="./images/textures/asteroids/asteroid.png"></img>')
+        this.obstacleElem = $('<img class="obstacle" src="./images/textures/asteroids/asteroid.png" draggable="false"></img>')
         this.obstacleElem.css({ 'width': this.radius * 2, 'height': this.radius * 2, 'top': `${this.posY}%`, 'left': `calc(100% + ${this.radius}px)` }) // Set parameters
         $('#game>#obstacles').append(this.obstacleElem) // Add to HTML
     }
